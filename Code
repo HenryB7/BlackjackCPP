@@ -1,0 +1,256 @@
+// Blackjack Project.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+enum Suit { Hearts, Diamonds, Spades, Clubs };
+enum Value { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King };
+
+
+class Card
+{
+public:
+	Suit suit;
+	Value value;
+
+
+	string toString() {
+		string s;
+
+		switch (value) {
+		case Ace:
+			s += "A of ";
+			break;
+		case Two:
+			s += "2 of ";
+			break;
+		case Three:
+			s += "3 of ";
+			break;
+		case Four:
+			s += "4 of ";
+			break;
+		case Five:
+			s += "5 of ";
+			break;
+		case Six:
+			s += "6 of ";
+			break;
+		case Seven:
+			s += "7 of ";
+			break;
+		case Eight:
+			s += "8 of ";
+			break;
+		case Nine:
+			s += "10 of ";
+			break;
+		case Jack:
+			s += "J of ";
+			break;
+		case Queen:
+			s += "Q of ";
+			break;
+		case King:
+			s += "K of ";
+			break;
+
+		}
+
+		switch (suit) {
+		case Hearts:
+			s += "Hearts";
+			break;
+		case Diamonds:
+			s += "Diamonds";
+			break;
+		case Spades:
+			s += "Spades";
+			break;
+		case Clubs:
+			s += "Clubs";
+			break;
+
+
+		}
+
+
+
+		return s;
+
+	}
+
+	int toValue() {
+		int total = 0;
+
+		switch (value) {
+		case Ace:
+			total += 1;
+			break;
+		case Two:
+			total += 2;
+			break;
+		case Three:
+			total += 3;
+			break;
+		case Four:
+			total += 4;
+			break;
+		case Five:
+			total += 5;
+			break;
+		case Six:
+			total += 6;
+			break;
+		case Seven:
+			total += 7;
+			break;
+		case Eight:
+			total += 8;
+			break;
+		case Nine:
+			total += 9;
+			break;
+		case Jack:
+			total += 10;
+			break;
+		case Queen:
+			total += 10;
+			break;
+		case King:
+			total += 10;
+			break;
+		}
+
+		return total;
+	}
+
+};
+
+class Dealer
+{
+public:
+	vector<Card> deck;
+
+	void createDeck() {
+
+		for (int i = 0; i < Clubs; i++)
+		{
+			for (int j = 0; j < King; j++)
+			{
+				deck.push_back(Card{ static_cast<Suit>(i), static_cast<Value>(j) });
+
+			}
+		}
+
+	}
+
+	void shuffleDeck() {
+		random_shuffle(deck.begin(), deck.end());
+	}
+
+	Card deal() {
+		Card card = deck.back();
+		deck.pop_back();
+
+		return card;
+	}
+
+	void hit(Card card) {
+		hand.push_back(card);
+	}
+
+	string displayHand() {
+		string s = "";
+		for (int i = 0; i < hand.size(); i++) {
+			s += hand[i].toString();
+			s += "\n";
+
+		}
+		return s;
+
+	}
+
+	int displayHandValue() {
+		int total = 0;
+		for (int i = 0; i < hand.size(); i++) {
+			total += hand[i].toValue();
+		}
+		return total;
+
+	}
+
+private:
+	vector<Card> hand;
+
+};
+
+
+
+
+class Player 
+{
+public:
+	friend string Dealer::displayHand();
+	friend int Dealer::displayHandValue();
+	string name;
+
+	void hit(Card card) {
+		hand.push_back(card);
+	}
+
+	string displayHand() {
+		string s = "";
+		for (int i = 0; i < hand.size(); i++) {
+			s += hand[i].toString();
+			s += "\n";
+
+		}
+		return s;
+
+	}
+
+	int displayHandValue() {
+		int total = 0;
+		for (int i = 0; i < hand.size(); i++) {
+			total += hand[i].toValue();
+		}
+		return total;
+
+	}
+
+
+private:
+	vector<Card> hand;
+	
+
+};
+
+
+int main()
+{
+	Dealer dealer;
+	dealer.createDeck();
+	dealer.shuffleDeck();
+
+	dealer.hit(dealer.deal());
+	dealer.hit(dealer.deal());
+
+	cout << "Dealer's hand is: \n" << dealer.displayHand() << "with a value of " << dealer.displayHandValue() << "\n \n";
+
+	Player player;
+
+	player.name = "Henry";
+	player.hit(dealer.deal());
+	player.hit(dealer.deal());
+
+	cout << player.name << "'s" << " hand is: \n" << player.displayHand() << "with a value of "  << player.displayHandValue();
+
+	
+	
+	
+};
