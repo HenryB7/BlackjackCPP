@@ -1,0 +1,430 @@
+// Blackjack Project.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+enum Suit { Hearts, Diamonds, Spades, Clubs };
+enum Value { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King };
+
+
+
+class Card 
+{
+public:
+	Suit suit;
+	Value value;
+
+
+	string toString() {
+		string s;
+
+		switch (value) {
+		case Ace:
+			s += "A of ";
+			break;
+		case Two:
+			s += "2 of ";
+			break;
+		case Three:
+			s += "3 of ";
+			break;
+		case Four:
+			s += "4 of ";
+			break;
+		case Five:
+			s += "5 of ";
+			break;
+		case Six:
+			s += "6 of ";
+			break;
+		case Seven:
+			s += "7 of ";
+			break;
+		case Eight:
+			s += "8 of ";
+			break;
+		case Nine:
+			s += "9 of ";
+			break;
+		case Ten:
+			s += "10 of ";
+			break;
+		case Jack:
+			s += "J of ";
+			break;
+		case Queen:
+			s += "Q of ";
+			break;
+		case King:
+			s += "K of ";
+			break;
+
+		}
+
+		switch (suit) {
+		case Hearts:
+			s += "Hearts";
+			break;
+		case Diamonds:
+			s += "Diamonds";
+			break;
+		case Spades:
+			s += "Spades";
+			break;
+		case Clubs:
+			s += "Clubs";
+			break;
+
+
+		}
+
+
+
+		return s;
+
+	}
+
+	int toValue() {
+		int total = 0;
+
+		switch (value) {
+		case Ace:
+			total += 1;
+			break;
+		case Two:
+			total += 2;
+			break;
+		case Three:
+			total += 3;
+			break;
+		case Four:
+			total += 4;
+			break;
+		case Five:
+			total += 5;
+			break;
+		case Six:
+			total += 6;
+			break;
+		case Seven:
+			total += 7;
+			break;
+		case Eight:
+			total += 8;
+			break;
+		case Nine:
+			total += 9;
+			break;
+		case Ten:
+			total += 10;
+			break;
+		case Jack:
+			total += 10;
+			break;
+		case Queen:
+			total += 10;
+			break;
+		case King:
+			total += 10;
+			break;
+		}
+
+		return total;
+	}
+
+};
+
+class Dealer 
+{
+public:
+	vector<Card> deck;
+
+	void createDeck() {
+
+		for (int i = 0; i < Clubs; i++)
+		{
+			for (int j = 0; j < King; j++)
+			{
+				deck.push_back(Card{ static_cast<Suit>(i), static_cast<Value>(j) });
+
+			}
+		}
+
+	}
+
+	void shuffleDeck() {
+		random_shuffle(deck.begin(), deck.end());
+	}
+
+	Card deal() {
+		Card card = deck.back();
+		deck.pop_back();
+
+		return card;
+	}
+
+	void hit(Card card) {
+		hand.push_back(card);
+	}
+
+	string displayHandDealer() {
+		string s = "";
+		for (int i = 0; i < 1; i++) {
+			s += hand[i].toString();
+			s += "\n";
+			s += "------- \n";
+				
+		}
+		return s;
+
+	}
+
+	int handValue() {
+		int total = 0;
+		for (int i = 0; i < hand.size(); i++) {
+			total += hand[i].toValue();
+		}
+		return total;
+
+	}
+
+private:
+	vector<Card> hand;
+
+};
+
+
+
+
+class Player 
+
+{
+public:
+	int handTotal = 0;
+	string name;
+
+	void hit(Card card) {
+		hand.push_back(card);
+	}
+
+	string displayHand() {
+		string s = "";
+		for (int i = 0; i < hand.size(); i++) {
+			s += hand[i].toString();
+			s += "\n";
+
+		}
+		return s;
+
+	}
+
+	int handValue() {
+		int total = 0;
+		for (int i = 0; i < hand.size(); i++) {
+			total += hand[i].toValue();
+		}
+		return total;
+
+	}
+
+	bool hasAce() {
+		bool has_ace = false;
+		for (int i = 0; i < hand.size(); i++) {
+			if (hand[i].value == Ace) {
+				has_ace = true;
+			}
+		}
+		return has_ace;
+	}
+
+	int changeAce() {
+		int ace = 0;
+		string choice;
+		cout << "Do you want to change your Ace to an 11? Y/N" << endl;
+		cin >> choice;
+		if (choice == "Y") {
+			ace = 10;
+		}
+
+		else {
+			ace = 0;
+		}
+		
+		return ace;
+	}
+
+	int newCard() {
+		int card = 0;
+		string choice;
+		for (int i = 2; i < hand.size(); i++) {
+			card += hand[i].toValue();
+			if (card == 1) {
+				cout << "Do you want to change your Ace to an 11? Y/N" << endl;
+				cin >> choice;
+				if (choice == "Y") {
+					card = 11;
+
+				}
+
+				else {
+					card = 1;
+				}
+
+			}
+		}
+		return card;
+
+	}
+	
+	bool stand() {
+		bool stand = false;
+		string choice;
+		cout << "Do you want to stand? Y/N" << endl;
+		cin >> choice;
+		transform(choice.begin(), choice.end(), choice.begin(),
+			[](unsigned char c) { return std::toupper(c); });
+		if (choice == "Y") {
+			stand = true;
+		}
+
+		else {
+			stand = false;
+		
+		}
+	
+		return stand;
+	}
+
+private:
+	vector<Card> hand;
+	
+
+};
+
+void DisplayRules() {
+	cout << "The most important blackjack rule is to beat the dealer's hand without going above 21.\nYou can 'hit' to gain an extra card or 'stand' to keep the cards you have.\nAn ace can be worth 1 or 11, you decide and a card worth 10, eg. 10, J, Q, K with an Ace is Blackjack!\n";
+}
+
+void PlayGame() {
+
+	string name;
+	cout << "What is your name?" << endl;
+	cin >> name;
+
+	Dealer dealer;
+	dealer.createDeck();
+	dealer.shuffleDeck();
+
+	dealer.hit(dealer.deal());
+	dealer.hit(dealer.deal());
+
+	cout << "\nDealer's hand is: \n" << dealer.displayHandDealer() << "\n";
+
+	Player player;
+
+	player.name = name;
+	player.hit(dealer.deal());
+	player.hit(dealer.deal());
+	player.handTotal = player.handValue();
+
+	cout << player.name << "'s" << " hand is: \n" << player.displayHand() << "with a value of " << player.handTotal << "\n \n";
+
+
+
+
+
+	
+		if (player.hasAce()) {
+			player.handTotal += player.changeAce();
+			cout << player.name << "'s" << " hand is now worth: " << player.handTotal << endl;
+		}
+
+		while (player.handValue() < 22) {
+			if (!player.stand()) {
+				player.hit(dealer.deal());
+				cout << player.displayHand();
+				player.handTotal += player.newCard();
+				//if (player.hasAce()) {
+					//player.handTotal += player.changeAce();
+					cout << player.name << "'s" << " hand is now worth: " << player.handTotal << endl;
+				//}
+				 if (player.handValue() > 21) {
+						cout << player.name << "'s" << " hand is now worth: " << player.handTotal << " You are BUST, the dealer WINS!\n";
+					}
+
+			
+			}
+
+			else {
+				cout << player.name << " has stood on " << player.handTotal <<endl;
+				break;
+			}
+
+			
+		}
+		
+
+		//Broken V2
+		/*while (player.handTotal < 22) {
+			player.handTotal = player.handValue();
+			if (player.hasAce()) {
+				player.handTotal += player.changeAce();
+				cout << player.name << "'s" << " hand is now worth: " << player.handValue() << endl;
+			}
+		if (!player.stand()) {
+			player.hit(dealer.deal());
+			player.handTotal = player.handValue();
+			cout << player.displayHand();
+			if (player.handValue() > 21) {
+					cout << player.name << "'s" << " hand is now worth: " << player.handValue() << " You are BUST, the dealer WINS!\n";
+				}
+			}
+
+		}*/
+
+}
+
+int main()
+{
+
+	int choice;
+	bool gameOn = true;
+	while (gameOn != false) {
+		cout << "Welcome To Blackjack\n";
+		cout << "-----------------------\n";
+		cout << " 1 - Start the game.\n";
+		cout << " 2 - Help\n";
+		cout << " 3 - Exit.\n";
+		cout << " Enter your choice and press return: ";
+
+		cin >> choice;
+
+		switch (choice)
+		{
+		case 1:
+			cout << "Starting Game!\n";
+			PlayGame();
+			break;
+		case 2:
+			cout << "Rules of Blackjack:\n";
+			DisplayRules();
+			break;
+		case 3:
+			cout << "End of Program.\n";
+			gameOn = false;
+			break;
+		default:
+			cout << "Not a Valid Choice. \n";
+			cout << "Choose again.\n";
+			cin >> choice;
+			break;
+		}
+
+	}
+	return 0;
+	
+};
